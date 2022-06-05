@@ -1,0 +1,58 @@
+---
+title: "Project 2C"
+output: html_notebook
+---
+Question: Are the hemagluttin from the two H3N2 strain in 2016 more similar to that of the 1968 H3N2 pandemic or the strain found in 2004?
+
+Hypothesis: If the hemagluttins of different H3N2 human infecting strains are compared to each other, then the 2016 strain will have a higher protein sequence similarity to the 2004 and 2005 strains, which would support the pattern of the H3N2 strains decreased virus avidity?
+
+Background:
+Influenza A viruses or IAV have been a major concern to the world as they have been the cause of 3 major pandemics in the past. These pandemics were the 1918 Spanish Influenza caused by H1N1, the 1957 Asian Influenza caused by H2N2, and the 1968 Hong Kong influenza caused by H3N2 (Hiroshi). Influenza A viruses are further subtyped based on two of their surface glycoproteins. These proteins are the hemagluttin or HA and neuraminidase or NA. The NA protein in IAV are responsible for cleaving sialic acid on the surface of the host cell, which allows for the viruses to leave the host cell and further spread to other cells. There are currently 11 known NA's. The HA protein is important for the virus to be able to bind to sialic acid on the host cell, so it allows the virus into the cell. There are currently 18 known HA proteins. H3N2 is a subtype of influenza a that emerged in 1968 for the first time in humans in Hong Kong and was the cause of a global pandemic associated with more than one million deaths (Allen). From then on, H3N2 has been closely studied as it continues to circulate and evolve within the human population. However, a recent study found that from 2001 to 2010 there has been a pattern of declined avidity of human H3 viruses for avian receptors and also a significant decrease in H3's affinity towards human for human receptors (Pu et al). The question is this pattern in H3N2 evolution still continuing even in more recent years.  
+
+Packages:
+BiocManager is useful for statistical analysis and comprehending highthoroughput genomic data. In my code specifically it was useful in running the multiple sequence alignment for my amino acid sequences. 
+
+msa: is a package within Biocmanager that provides the algorithm for running multiple sequence alignments
+
+seqinr: is a package that is necessary for data analysis and visualization of biological sequences, like data and proteins. In the code this was specifically used to find the distance between each multiple sequence alignment.
+
+ape is a package that allows for the reading, writing, plotting and manipulation of phylogenetic tree, so it was used to plot a phylogenetic tree of my amino acid sequences. 
+```{r}
+#1st Bioinformatic Method: Multiple Sequence Alignment and Phylogenetic Tree (visualization)
+#packages
+library(BiocManager)
+library(msa)
+library(seqinr)
+library(ape)
+#read in amino acid sequence files, which were found on NCBI under the names 
+#have to read in fasta files as a string, instead of vector in order for the function msa to work
+H3N2_1968_hongkong<- readAAStringSet("H3N2:1968.fasta")
+H3N2_2004_sweden<-readAAStringSet("H3N2:2004.fasta")
+H3N2_2016_tenessee<- readAAStringSet("H3N2:2016:tenessee.fasta")
+H3N2_2016_florida<-readAAStringSet("H3N2:2016:florida.fasta")
+
+#use multiple sequence alignment on 4 variables
+all<-c(H3N2_2004_sweden, H3N2_1968_hongkong, H3N2_2016_florida, H3N2_2016_tenessee)
+H3N2_alignment<-msa(all)
+print(H3N2_alignment, show="complete")
+
+#convert to seqinr type alignment in order to calculate the distance between each sequence
+H3N2_Al2<-msaConvert(H3N2_alignment, type="seqinr::alignment")
+
+#calculate distance matrix
+d<-dist.alignment(H3N2_Al2, "identity")
+as.matrix(d)
+
+#plot phylogenetic tree
+H3N2_tree<-nj(d)
+plot(H3N2_tree, main="Phylogenetic Tree of H3N2 Strains")
+```
+```{r}
+#read in pdb files from protein data bank
+H3N2_hongkong<-read_csv("1968.pdb")
+```
+
+
+```
+
+
